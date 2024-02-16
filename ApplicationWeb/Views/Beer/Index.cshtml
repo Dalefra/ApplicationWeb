@@ -1,0 +1,27 @@
+﻿@model List<ApplicationWeb.Models.Beer>
+
+<h1>Lista de Cervezas</h1>
+
+<p>
+    <a asp-action="Create">Crear</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Marca</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var beer in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => beer.Name)</td>
+                <td>@Html.DisplayFor(m => beer.Brand.Name)</td>
+                <td>XXX</td>
+            </tr>
+        }
+    </tbody>
+</table>
