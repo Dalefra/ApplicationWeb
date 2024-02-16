@@ -1,0 +1,140 @@
+﻿1
+----------------------
+Coneccion a base de datos
+Agregar librerias
+Scripd de credenciales
+
+Ir a pm y agregar el scrip
+
+luego ir a appseting
+
+luego ir a program
+
+ejecutar 
+luego crear la vista inyectando la base 
+
+---------------------
+2
+---------------------
+Abrir visual Studio 2022
+Crear proyecto
+Buscar API
+Se crea el proyecto
+-------------------------
+Para agregar un controlador 
+Dar clic en la carpeta controllers
+Seleciona agregar y controlador de api en blanco 
+
+// Ejemplo Params
+Luego crear el metodo public decimal add (decimal a, decimal b){} y agregar el verbo [HttpGet] si no se define por defecto es get.
+si es por get los parametro se los envia por params, mediante el uso de Swager
+ 
+Si es por params no se crea clase
+-------------------------
+// Ejemplo Body
+
+Se crea la clase de los valores a ingresar 
+public class Numbers 
+{
+public decimal A {get; set;}
+}
+------------------------------
+si se quiere obtener un dato del front header se hace uso de la etiqueta 
+[FrontHeader]
+Ejemplo
+[FrontHeader] string Host
+[FrontHeader (name = "Content-Length")] string ContentLength
+-----------------------------
+Tipo de respuesta de un controlador
+-----------------------------
+Cuando una clase es estatica no es necesario crear el objeto para usar la propiedad
+---------------------------
+    public IActionResult Agregar (People people) // cuando se solicita una accion sin respuesta
+
+public ActionResult<People> Get (int id) // cuando se solicita una accion Con respuesta
+---------------------------
+Capa de servicios
+Implementacion de la capa de servicio 
+
+Crear el servicio en donde solo va las funciones "IPeopleService"
+crear la interfas de servicio en donde va la logica de la funcion "PeopleService"
+
+(Mala practica) Ir al controlador y llamar a la interfaz "IPeopleService _peopleService"
+
+y crear el objeto en el constructor 
+
+public PeopleController {
+   _peopleService = new Peopleservice();
+}
+
+-------------------------------------------------------------------------------------------------
+IR a program para la implemenracion de la inyeccion de dependencias
+
+
+(Iyeccion)
+builder.Services.AddSingleton<IPeopleService, PeopleService>();
+
+Luego modificar la llamada
+
+
+        private IPeopleService _peopleService;
+
+        public PeopleController(IPeopleService peopleService) {
+            _peopleService = peopleService;
+        }
+
+Corregido
+---------------------------------------------------------------------------
+
+a partir de .net 8 se puede usar key para usar el servicio inyectado en programs.cs
+
+colocar similar.
+
+builder.Services.AddKeyedSingleton<IPeopleService, PeopleService>("people");
+
+luego en el controlador 
+
+public PeopleController([FromKeyedServices("people")]IPeopleService peopleService) {
+    _peopleService = peopleService;
+}
+----------------------------------------------------------------------------------------------
+como instalar entity framework
+
+ir a dependencia, ir a nuget.
+
+Buscar
+
+entityframeworkcore.sqlserver
+entityframeworkcore.tools
+
+Luego crear la carpeta models 
+y las clases de la base DTO
+-----------------------------------------
+Context
+using Microsoft.EntityFrameworkCore;
+
+namespace Backend.Models
+{
+    public class StoreContext: DbContext
+    {
+        public StoreContext(DbContextOptions<StoreContext> options)
+            :base(options) 
+        {}
+
+        public DbSet<Beer> Beers { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+    }
+}
+-----------------------------------------------------------------------------------------------
+Configuracion de la conexion
+Server=DESKTOP-C038C9D; Database=Store; User=sa; Password=Doas98; Trust Server Certificate=True
+-----------------------------------------------------------------------------------------------
+Crear los modelos 
+Crear los DTOs
+realizar Crud
+----------------------------------------------------------------------------------------------
+Validation 
+FluentValidation
+---------------------------------------------------------------------------------------------
+Scaffold-DbContext "Server=DESKTOP-C038C9D; Database=Store; User=sa; Password=Doas98; Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+---------------------

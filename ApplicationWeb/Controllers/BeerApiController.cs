@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace ApplicationWeb.Controllers
 {
@@ -55,7 +57,7 @@ namespace ApplicationWeb.Controllers
             return Ok(beerDto);
 
         }
-
+        
         [HttpPost]
         public async Task<ActionResult<BeerDto>> Add(BeerInsertDto beerInsertDto)
         {
@@ -66,6 +68,26 @@ namespace ApplicationWeb.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
+            // Crear la fecha
+            DateTime fecha = new DateTime(2024, 2, 16);
+
+            // Convertir la fecha a bytes
+            byte[] bytesFecha = BitConverter.GetBytes(fecha.Ticks);
+
+            // Mostrar los bytes que representan la fecha
+            Console.WriteLine("Bytes de la fecha 16/02/2024:");
+            foreach (byte b in bytesFecha)
+            {
+                Console.Write(b.ToString("X2") + " ");
+            }
+
+            var log = new Log()
+            {
+                IdLog = 1,
+                Accion = "Insert Dto",
+                FechaLog =  BitConverter.GetBytes(fecha.Ticks)
+           };
+
             var berr = new Beer()
             {
                 Name = beerInsertDto?.Name,
@@ -73,7 +95,8 @@ namespace ApplicationWeb.Controllers
                 Alcohol = beerInsertDto.Alcohol
             };
 
-            await _storeContext.AddAsync(berr);
+            await _storeContext.Beers.AddAsync(berr);
+            await _storeContext.Logs.AddAsync(log);
             await _storeContext.SaveChangesAsync();
 
             var beerDto = new BeerDto
@@ -87,6 +110,7 @@ namespace ApplicationWeb.Controllers
             return CreatedAtAction(nameof(GetId), new { id = berr.BeerId }, beerDto);
 
         }
+        
 
         [HttpPut("{id}")]
         public async Task<ActionResult<BeerDto>> Update(int id, BeerUpdateDto beerUpdateDto)
